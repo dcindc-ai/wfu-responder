@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+ import { useState, useRef, useEffect } from "react";
 
 const INSTRUCTOR_BIO = `The instructor is Dave Cook, a technology leader with over 30 years of experience in data, advanced analytics, and artificial intelligence. He currently supports AI/ML programs across the U.S. Intelligence Community and the Department of Defense and teaches AI at the University of Maryland and Wake Forest University. He is the Chief Innovation Officer for Cornerstone Defense and co-founded the Training Data Project (TDP) in 2023 to advance AI Value Science, a discipline focused on quantifying and measuring the impact and ROI of AI in government and commercial programs. A 19-time Marine Corps Marathon finisher, he views AI as a marathon, not a sprint. Dave serves on DC Mayor Muriel Bowser's AI Advisory Group and holds degrees from Northwestern University, Carnegie Mellon University, and the University of Maryland. He has published multiple refereed papers on AI and is a contributing author to the Amazon #1 bestseller "AI: Work Smarter and Live Better."`;
 
@@ -29,21 +29,21 @@ The discussion question you asked the class was:
 ${discussionQuestion}
 ---
 
-When given a student's name and their discussion post, generate a response with EXACTLY these rules:
+When given a student's name and their discussion post, generate ONLY your instructor reply with EXACTLY these rules:
 1. Exactly ${countWord} sentences. No more, no fewer.
-2. The FIRST sentence must open by directly addressing the student with a warm casual reaction. Examples: "Hey Lakita, really strong intro here." or "Nice work Marcus, lots to dig into." or "Good stuff here, Jamie." Never summarize or repeat their content in the first sentence. Never start with their goals or what they said.
+2. The FIRST sentence must be a short warm direct address to the student. Examples: "Hey Lakita, really strong intro here." or "Nice work Marcus, lots to dig into." or "Good stuff, Jamie, glad you are here." Never restate, summarize, or quote anything from the student's post in the first sentence.
 3. Each sentence must be no more than 15 words.
 4. The ${questionPos} sentence must be a genuine curious question sparked by something specific they wrote.
 5. The ${closePos} sentence must close warmly, commending the student for a thoughtful response.
 6. Use casual openers, contractions, and plain English. No formal or flowery language.
 7. Never use em dashes anywhere. Use commas, periods, or conjunctions instead.
 8. Use the student's first name EXACTLY ONCE, in the first sentence only.
-9. Never summarize or repeat the student's content. React to it, build on it, or push it further.
-10. You are always the instructor responding to the student. Never write from the student's perspective.
-11. Engage with something specific and interesting from what they wrote, no generic praise.
+9. Never restate, summarize, or quote the student's content anywhere in your reply. React to it instead.
+10. You are always the instructor. Never write from the student's perspective.
+11. Engage with one specific interesting thing from what they wrote. No generic praise.
 12. Where it fits naturally, briefly connect their idea to real-world AI practice or strategy.
 
-Return ONLY the ${countLower} sentences, no preamble, no labels, no extra text.`;
+OUTPUT: Return ONLY the ${countLower} sentences of your reply. No preamble, no labels, no student text, no extra content of any kind.`;
 }
 
 function buildSummaryPrompt(discussionQuestion) {
@@ -110,10 +110,9 @@ export default function WFUResponder() {
     try {
       const text = await callClaude(
         buildSystemPrompt(sentenceCount, discussionQuestion),
-        `Student name: ${name}\n\nStudent's answer:\n${answer}`
+        `Student name: ${name}\n\nStudent's answer:\n${answer}\n\nNow write ONLY your instructor reply. Do not repeat, quote, or restate any part of the student's response above.`
       );
-      const parts = text.split("---");
-      setResponse(parts[parts.length - 1].trim());
+      setResponse(text.trim());
       setSubmissions(prev => [...prev, { name: name.trim(), answer: answer.trim() }]);
     } catch (e) {
       setError(`Error: ${e.message}`);
@@ -127,7 +126,7 @@ export default function WFUResponder() {
     setSummary("");
     const allResponses = submissions.map((s, i) =>
       `Student ${i + 1} (${s.name}):\n${s.answer}`
-    ).join("\n\n---\n\n");
+    ).join("\n\n===\n\n");
     try {
       const text = await callClaude(
         buildSummaryPrompt(discussionQuestion),
@@ -185,7 +184,7 @@ export default function WFUResponder() {
   const inputStyle = {
     width: "100%",
     background: "#2a2a2a",
-    border: `1.5px solid rgba(207,181,59,0.3)`,
+    border: "1.5px solid rgba(207,181,59,0.3)",
     borderRadius: "6px",
     padding: "12px 16px",
     color: "#f0f0f0",
@@ -282,7 +281,7 @@ export default function WFUResponder() {
             flex: 1, padding: "11px",
             background: view === tab ? gold : cardBg,
             border: `1.5px solid ${view === tab ? gold : goldBorder}`,
-            color: view === tab ? black : "#888",
+            color: view === tab ? black : "#888"
           }}>
             {tab === "responder" ? "Respond to Student" : `Class Summary${submissions.length > 0 ? ` (${submissions.length})` : ""}`}
           </button>
@@ -292,7 +291,7 @@ export default function WFUResponder() {
       {view === "responder" && (
         <>
           <div style={{
-            background: cardBg, border: `1.5px solid rgba(207,181,59,0.2)`,
+            background: cardBg, border: "1.5px solid rgba(207,181,59,0.2)",
             borderRadius: "12px", padding: "36px", width: "100%", maxWidth: "660px",
             boxSizing: "border-box"
           }}>
@@ -346,7 +345,7 @@ export default function WFUResponder() {
               marginTop: "28px", background: cardBg,
               border: `2px solid ${gold}`,
               borderRadius: "12px", padding: "32px 36px", width: "100%", maxWidth: "660px",
-              boxSizing: "border-box", boxShadow: `0 4px 24px rgba(207,181,59,0.12)`
+              boxSizing: "border-box", boxShadow: "0 4px 24px rgba(207,181,59,0.12)"
             }}>
               <div style={{ ...labelStyle, marginBottom: "16px" }}>Suggested Response</div>
               <p style={{ color: "#e8e8e8", fontSize: "17px", lineHeight: "1.85", margin: "0 0 24px", fontStyle: "italic" }}>
@@ -369,7 +368,7 @@ export default function WFUResponder() {
 
       {view === "summary" && (
         <div style={{
-          background: cardBg, border: `1.5px solid rgba(207,181,59,0.2)`,
+          background: cardBg, border: "1.5px solid rgba(207,181,59,0.2)",
           borderRadius: "12px", padding: "36px", width: "100%", maxWidth: "660px",
           boxSizing: "border-box"
         }}>
