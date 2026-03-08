@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const INSTRUCTOR_BIO = `The instructor is Dave Cook, a technology leader with over 30 years of experience in data, advanced analytics, and artificial intelligence. He currently supports AI/ML programs across the U.S. Intelligence Community and the Department of Defense and teaches AI at the University of Maryland and Wake Forest University. He is the Chief Innovation Officer for Cornerstone Defense and co-founded the Training Data Project (TDP) in 2023 to advance AI Value Science — a discipline focused on quantifying and measuring the impact and ROI of AI in government and commercial programs. A 19-time Marine Corps Marathon finisher, he views AI as a marathon, not a sprint. Dave serves on DC Mayor Muriel Bowser's AI Advisory Group and holds degrees from Northwestern University, Carnegie Mellon University, and the University of Maryland. He has published multiple refereed papers on AI and is a contributing author to the Amazon #1 bestseller "AI: Work Smarter and Live Better."`;
+const INSTRUCTOR_BIO = `The instructor is Dave Cook, a technology leader with over 30 years of experience in data, advanced analytics, and artificial intelligence. He currently supports AI/ML programs across the U.S. Intelligence Community and the Department of Defense and teaches AI at the University of Maryland and Wake Forest University. He is the Chief Innovation Officer for Cornerstone Defense and co-founded the Training Data Project (TDP) in 2023 to advance AI Value Science, a discipline focused on quantifying and measuring the impact and ROI of AI in government and commercial programs. A 19-time Marine Corps Marathon finisher, he views AI as a marathon, not a sprint. Dave serves on DC Mayor Muriel Bowser's AI Advisory Group and holds degrees from Northwestern University, Carnegie Mellon University, and the University of Maryland. He has published multiple refereed papers on AI and is a contributing author to the Amazon #1 bestseller "AI: Work Smarter and Live Better."`;
 
 const DEFAULT_QUESTION = `Welcome to AIN 714! Please introduce yourself and share your thoughts on the following:
 
@@ -8,7 +8,7 @@ const DEFAULT_QUESTION = `Welcome to AIN 714! Please introduce yourself and shar
 (2) Why are you interested in AI Strategy and Innovation?
 (3) What is the most interesting recent application of AI you have seen in your field or industry?
 
-There are no wrong answers — I'm interested in what and how you think.`;
+There are no wrong answers. I am interested in what and how you think.`;
 
 function buildSystemPrompt(sentenceCount, discussionQuestion) {
   const isFour = sentenceCount === 4;
@@ -22,7 +22,7 @@ function buildSystemPrompt(sentenceCount, discussionQuestion) {
 About you:
 ${INSTRUCTOR_BIO}
 
-Your voice is casual, direct, warm, and real — not stiff or academic. You sound like a sharp, experienced mentor who genuinely enjoys their students and brings real-world practitioner credibility to every interaction. You are conversational, encouraging, occasionally playful, and always specific. You use plain language and keep it tight. You connect student ideas back to real-world AI applications, strategy, and practice when relevant.
+Your voice is casual, direct, warm, and real, not stiff or academic. You sound like a sharp, experienced mentor who genuinely enjoys their students and brings real-world practitioner credibility to every interaction. You are conversational, encouraging, occasionally playful, and always specific. You use plain language and keep it tight.
 
 The discussion question you asked the class was:
 ---
@@ -31,14 +31,17 @@ ${discussionQuestion}
 
 When given a student's name and their discussion post, generate a response with EXACTLY these rules:
 1. Exactly ${countWord} sentences. No more, no fewer.
-2. Each sentence must be no more than 15 words.
-3. The ${questionPos} sentence must be a question, something genuinely curious, sparked by their answer.
-4. The ${closePos} sentence must close warmly, commending the student for a thoughtful response.
-5. Sound like a real person: use casual openers, contractions, and plain English. Avoid formal or flowery language.
-6. Never use em dashes anywhere in the response. Use commas, periods, or conjunctions instead.
-7. Use the student's first name EXACTLY ONCE, naturally, not forced.
-8. Engage specifically with what they actually wrote, no generic praise.
-9. You are ALWAYS the instructor responding TO the student. Never summarize or repeat their content. Never write from the student's perspective. Open with your own reaction or observation.
+2. The FIRST sentence must open by directly addressing the student with a warm casual reaction. Examples: "Hey Lakita, really strong intro here." or "Nice work Marcus, lots to dig into." or "Good stuff here, Jamie." Never summarize or repeat their content in the first sentence. Never start with their goals or what they said.
+3. Each sentence must be no more than 15 words.
+4. The ${questionPos} sentence must be a genuine curious question sparked by something specific they wrote.
+5. The ${closePos} sentence must close warmly, commending the student for a thoughtful response.
+6. Use casual openers, contractions, and plain English. No formal or flowery language.
+7. Never use em dashes anywhere. Use commas, periods, or conjunctions instead.
+8. Use the student's first name EXACTLY ONCE, in the first sentence only.
+9. Never summarize or repeat the student's content. React to it, build on it, or push it further.
+10. You are always the instructor responding to the student. Never write from the student's perspective.
+11. Engage with something specific and interesting from what they wrote, no generic praise.
+12. Where it fits naturally, briefly connect their idea to real-world AI practice or strategy.
 
 Return ONLY the ${countLower} sentences, no preamble, no labels, no extra text.`;
 }
@@ -162,13 +165,10 @@ export default function WFUResponder() {
     setView("responder");
   }
 
-  // Wake Forest colors
   const gold = "#CFB53B";
-  const goldDark = "#a8911e";
   const goldFaint = "rgba(207,181,59,0.15)";
   const goldBorder = "rgba(207,181,59,0.4)";
   const black = "#1a1a1a";
-  const offBlack = "#2a2a2a";
   const darkBg = "#111111";
   const cardBg = "#1e1e1e";
 
@@ -218,8 +218,6 @@ export default function WFUResponder() {
       flexDirection: "column",
       alignItems: "center"
     }}>
-
-      {/* Header */}
       <div style={{ textAlign: "center", marginBottom: "28px", maxWidth: "660px" }}>
         <div style={{ fontSize: "11px", letterSpacing: "4px", color: gold, textTransform: "uppercase", marginBottom: "10px", fontWeight: "600" }}>
           Wake Forest University · Graduate School of Professional Studies
@@ -236,16 +234,10 @@ export default function WFUResponder() {
         <div style={{ width: "60px", height: "3px", background: gold, margin: "16px auto 0" }} />
       </div>
 
-      {/* Discussion Question Block */}
       <div style={{
-        background: cardBg,
-        border: `1.5px solid ${goldBorder}`,
-        borderRadius: "12px",
-        padding: "24px 28px",
-        width: "100%",
-        maxWidth: "660px",
-        boxSizing: "border-box",
-        marginBottom: "20px"
+        background: cardBg, border: `1.5px solid ${goldBorder}`,
+        borderRadius: "12px", padding: "24px 28px", width: "100%",
+        maxWidth: "660px", boxSizing: "border-box", marginBottom: "20px"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
           <div style={labelStyle}>Discussion Question</div>
@@ -283,7 +275,6 @@ export default function WFUResponder() {
         )}
       </div>
 
-      {/* Tabs */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "24px", width: "100%", maxWidth: "660px" }}>
         {["responder", "summary"].map(tab => (
           <button key={tab} onClick={() => setView(tab)} style={{
@@ -292,14 +283,12 @@ export default function WFUResponder() {
             background: view === tab ? gold : cardBg,
             border: `1.5px solid ${view === tab ? gold : goldBorder}`,
             color: view === tab ? black : "#888",
-            fontWeight: "700"
           }}>
             {tab === "responder" ? "Respond to Student" : `Class Summary${submissions.length > 0 ? ` (${submissions.length})` : ""}`}
           </button>
         ))}
       </div>
 
-      {/* Responder View */}
       {view === "responder" && (
         <>
           <div style={{
@@ -332,15 +321,12 @@ export default function WFUResponder() {
               style={{
                 ...btnBase,
                 width: "100%", padding: "14px",
-                background: loading || !name.trim() || !answer.trim() || !discussionQuestion.trim()
-                  ? "#333" : gold,
-                color: loading || !name.trim() || !answer.trim() || !discussionQuestion.trim()
-                  ? "#666" : black,
-                cursor: loading || !name.trim() || !answer.trim() || !discussionQuestion.trim()
-                  ? "not-allowed" : "pointer"
+                background: loading || !name.trim() || !answer.trim() || !discussionQuestion.trim() ? "#333" : gold,
+                color: loading || !name.trim() || !answer.trim() || !discussionQuestion.trim() ? "#666" : black,
+                cursor: loading || !name.trim() || !answer.trim() || !discussionQuestion.trim() ? "not-allowed" : "pointer"
               }}
             >
-              {loading ? "Generating Response…" : "Generate Response"}
+              {loading ? "Generating Response..." : "Generate Response"}
             </button>
           </div>
 
@@ -374,14 +360,13 @@ export default function WFUResponder() {
                 color: copied ? black : gold,
                 fontSize: "11px"
               }}>
-                {copied ? "✓ Copied" : "Copy to Clipboard"}
+                {copied ? "Copied" : "Copy to Clipboard"}
               </button>
             </div>
           )}
         </>
       )}
 
-      {/* Summary View */}
       {view === "summary" && (
         <div style={{
           background: cardBg, border: `1.5px solid rgba(207,181,59,0.2)`,
@@ -416,7 +401,7 @@ export default function WFUResponder() {
                 cursor: summaryLoading ? "not-allowed" : "pointer",
                 marginBottom: summary ? "28px" : "0"
               }}>
-                {summaryLoading ? "Generating Summary…" : "Generate Class Summary"}
+                {summaryLoading ? "Generating Summary..." : "Generate Class Summary"}
               </button>
               {summary && (
                 <>
@@ -432,7 +417,7 @@ export default function WFUResponder() {
                     color: summaryCopied ? black : gold,
                     fontSize: "11px"
                   }}>
-                    {summaryCopied ? "✓ Copied" : "Copy to Clipboard"}
+                    {summaryCopied ? "Copied" : "Copy to Clipboard"}
                   </button>
                 </>
               )}
