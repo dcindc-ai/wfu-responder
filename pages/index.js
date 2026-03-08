@@ -38,7 +38,7 @@ When given a student's name and their discussion post, generate a response with 
 6. Never use em dashes anywhere in the response. Use commas, periods, or conjunctions instead.
 7. Use the student's first name EXACTLY ONCE, naturally, not forced.
 8. Engage specifically with what they actually wrote, no generic praise.
-9. Where natural, draw on your real-world AI experience to add a brief, grounded observation.
+9. You are ALWAYS the instructor responding TO the student. Never summarize or repeat their content. Never write from the student's perspective. Open with your own reaction or observation.
 
 Return ONLY the ${countLower} sentences, no preamble, no labels, no extra text.`;
 }
