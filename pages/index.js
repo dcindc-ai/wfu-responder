@@ -109,7 +109,8 @@ export default function WFUResponder() {
         buildSystemPrompt(sentenceCount, discussionQuestion),
         `Student name: ${name}\n\nStudent's answer:\n${answer}`
       );
-      setResponse(text.trim());
+      const parts = text.split("---");
+      setResponse(parts[parts.length - 1].trim());
       setSubmissions(prev => [...prev, { name: name.trim(), answer: answer.trim() }]);
     } catch (e) {
       setError(`Error: ${e.message}`);
